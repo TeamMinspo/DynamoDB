@@ -1,0 +1,30 @@
+.itemContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 1000px;
+  margin: auto;
+
+  .itemCard {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 8px;
+    gap: 8px;
+    padding: 8px;
+
+    .thumbnail {
+      width: 100px;
+      height: 100px;
+      background-color: gray;
+    }
+
+    .itemInfo {
+      flex-grow: 1;
+    }
+
+    .buttonContainer {
+      display: flex;
+      align-items: flex-end;
+    }
+  }
+}
