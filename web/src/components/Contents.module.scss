@@ -1,0 +1,40 @@
+
+$screen-size-medium: 594px;
+$screen-size-large: 1140px;
+
+@mixin large {
+  @media screen and (min-width: $screen-size-large) {
+    @content;
+  }
+}
+
+@mixin medium {
+  @media screen and (min-width: $screen-size-medium) and (max-width: $screen-size-large) {
+    @content;
+  }
+}
+
+@mixin small {
+  @media screen and (max-width: $screen-size-medium) {
+    @content;
+  }
+}
+
+
+.contents {
+  max-width: 1440px;
+  box-sizing: border-box;
+  margin: 0 auto;
+
+  @include large {
+    padding: 0 70px;
+  }
+
+  @include medium {
+    padding: 0 40px;
+  }
+
+  @include small {
+    padding: 0 12px;
+  }
+}

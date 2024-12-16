@@ -1,9 +1,12 @@
 import {useEffect, useState} from "react";
 import Category from "../model/Category.ts";
+import {useNavigate} from "react-router-dom";
+import Contents from "../components/Contents.tsx";
 
 const CategoryPage = () => {
   const [categories, setCategories] = useState<Category[]>([])
   const [expandedCategory, setExpandedCategory] = useState<Category | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetch('/api/items/categories')
@@ -20,20 +23,20 @@ const CategoryPage = () => {
   }
 
   return (
-    <>
+    <Contents>
       {categories.map(category => (
         <div key={category.name} style={{border: '1px solid black'}}>
           <div onClick={() => handleOnClick(category)}>{category.name}</div>
           {expandedCategory == category && (
             <ul>
               {category.subCategories.map(subCategory => (
-                <li key={subCategory}><a href={`/${subCategory}`}>{subCategory}</a></li>
+                <li key={subCategory}><button onClick={() => navigate(`/${subCategory}`)}>{subCategory}</button></li>
               ))}
             </ul>
           )}
         </div>
       ))}
-    </>
+    </Contents>
   )
 }
 
