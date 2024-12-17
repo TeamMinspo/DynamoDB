@@ -1,16 +1,14 @@
-import {BrowserRouter, Outlet, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Outlet, Route, Routes, useNavigate} from "react-router-dom";
 import styles from './App.module.scss'
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ItemListPage from "./pages/ItemListPage.tsx";
-import {createContext, ReactNode, useContext, useState} from "react";
+import {ReactNode, useState} from "react";
 import {CartItem} from "./model/CartItem.ts";
+import {CartContext, useCartContext} from "./CartContext.ts";
+import CartPage from "./pages/CartPage.tsx";
+import InquiryPage from "./pages/InquiryPage.tsx";
+import AdminPage from "./pages/AdminPage.tsx";
 
-interface CartContextValue {
-  cart: CartItem[],
-  setCart: (newCartItems: CartItem[]) => void
-}
-const CartContext = createContext<CartContextValue>({cart: [], setCart: () => {}})
-export const useCartContext = () => useContext(CartContext)
 
 const CartContextProvider = ({children}: {children: ReactNode}) => {
   const [cart, setCart] = useState<CartItem[]>([])
@@ -30,6 +28,9 @@ function App() {
           <Route path="/" element={<Header/>}>
             <Route path="" element={<CategoryPage/>}/>
             <Route path="/:category" element={<ItemListPage/>}/>
+            <Route path="/cart" element={<CartPage />}/>
+            <Route path="/inquiry" element={<InquiryPage />}/>
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -39,11 +40,18 @@ function App() {
 
 const Header = () => {
   const {cart} = useCartContext()
+  const navigate = useNavigate()
+
+  function getCountOfItemsInCart() {
+    return cart.reduce((sum, prev) => sum + prev.count, 0);
+  }
+
   return (
     <>
       <div className={styles.header}>
         <div>Amazones</div>
-        <div>カート{cart.reduce((sum, prev) => sum + prev.count, 0)}</div>
+        <div onClick={() => navigate("/cart")}>カート{getCountOfItemsInCart()}</div>
+        <div onClick={() => navigate("inquiry")}>商品問い合わせ</div>
       </div>
       <Outlet/>
     </>
