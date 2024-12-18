@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {ChangeEvent, useEffect, useState} from "react";
-import {ReceivedOrder} from "../model/ReceivedOrder.ts";
+import {OrderStatus, ReceivedOrder} from '../model/ReceivedOrder.ts'
 
 const AdminPage = () => {
   const navigate = useNavigate()
@@ -13,7 +13,7 @@ const AdminPage = () => {
   }, []);
 
   const onChangeStatus = (event: ChangeEvent<HTMLSelectElement>, targetOrder: ReceivedOrder) => {
-    const updatedOrder = {...targetOrder, status: event.target.value}
+    const updatedOrder: ReceivedOrder = {...targetOrder, status: event.target.value as OrderStatus}
     const body = JSON.stringify(updatedOrder)
     const headers = {"Content-Type": "application/json"}
     fetch(`/api/orders/${targetOrder.id}`, {method: "PATCH", body, headers})
