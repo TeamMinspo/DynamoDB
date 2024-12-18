@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import styles from "./ItemListPage.module.scss";
 import Item from "../model/Item.ts";
-import {useCartContext} from "../App.tsx";
+import {useCartContext} from "../CartContext.ts";
 import Contents from "../components/Contents.tsx";
 
 const ItemListPage = () => {

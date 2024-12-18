@@ -12,7 +12,7 @@ data class Category (
 
 @RestController
 @RequestMapping("/api/items")
-class ItemController {
+class ItemController(private val itemRepository: ItemRepository) {
     @GetMapping("/categories")
     fun getAllCategories(): List<Category> {
         return listOf(
@@ -60,6 +60,6 @@ class ItemController {
 
     @GetMapping("/{category}")
     fun getItemsByCategory(@PathVariable category: SecondaryCategory): List<Item> {
-        return items.filter { it.secondaryCategory == category }
+        return itemRepository.findAll().filter { it.secondaryCategory == category }
     }
 }
