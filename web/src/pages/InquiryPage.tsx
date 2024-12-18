@@ -1,7 +1,8 @@
-import {useNavigate} from "react-router-dom";
-import {ChangeEvent, useState} from "react";
-import Contents from "../components/Contents.tsx";
-import {ReceivedOrder} from "../model/ReceivedOrder.ts";
+import {useNavigate} from 'react-router-dom'
+import {ChangeEvent, useState} from 'react'
+import Contents from '../components/Contents.tsx'
+import {ReceivedOrder} from '../model/ReceivedOrder.ts'
+import OrderCard from '../components/OrderCard.tsx'
 
 
 function InquiryPage() {
@@ -40,12 +41,7 @@ function InquiryPage() {
       </label>
       <button onClick={handleInquiry}>問い合わせ</button>
       {receivedOrder && (
-        <div>
-          {receivedOrder.items.map(item => (
-            <div>{item.item.name}</div>
-          ))}
-          <div>{receivedOrder.status}</div>
-        </div>
+        <OrderCard order={receivedOrder}/>
       )}
     </Contents>
   )

@@ -7,12 +7,15 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/orders")
-class OrderController(private val itemRepository: ItemRepository) {
-    private var orders: MutableList<ReceivedOrder> = mutableListOf()
+class OrderController(
+    private val itemRepository: ItemRepository,
+    private val orderRepository: OrderRepository,
+) {
+
 
     @GetMapping
     fun getAllOrders(): List<ReceivedOrder> {
-        return orders
+        return orderRepository.findAll()
     }
 
     @PostMapping
@@ -37,20 +40,19 @@ class OrderController(private val itemRepository: ItemRepository) {
             customerName = order.customerName,
             status = OrderStatus.RECEIVED
         )
-        orders.add(receivedOrder)
+        orderRepository.save(receivedOrder)
         return receivedOrder.id
     }
 
     @GetMapping("/{orderId}")
     fun getOrderById(@PathVariable orderId: UUID): ReceivedOrder {
-        return orders.find { it.id == orderId } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
+        return orderRepository.findById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
     }
 
     @PatchMapping("/{orderId}")
     fun updateOrderById(@PathVariable orderId: UUID, @RequestBody order: ReceivedOrder) {
-        val orderBefore = orders.find { it.id == orderId } ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
-        orders.remove(orderBefore)
-        orders.add(order)
+        orderRepository.findById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
+        orderRepository.save(order)
     }
 }
 

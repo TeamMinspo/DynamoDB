@@ -1,9 +1,10 @@
-import {useCartContext} from "../CartContext.ts";
-import {useNavigate} from "react-router-dom";
-import {CartItem} from "../model/CartItem.ts";
-import Contents from "../components/Contents.tsx";
-import styles from "./CartPage.module.scss"
-import {ChangeEvent, useState} from "react";
+import {useCartContext} from '../CartContext.ts'
+import {useNavigate} from 'react-router-dom'
+import {CartItem} from '../model/CartItem.ts'
+import Contents from '../components/Contents.tsx'
+import {ChangeEvent, useState} from 'react'
+import ItemCard from '../components/ItemCard.tsx'
+import List from '../components/List.tsx'
 
 interface Order {
   items: CartItem[]
@@ -56,20 +57,16 @@ const CartPage = () => {
     <Contents>
       <h2>cart</h2>
       <button onClick={onClickBackButton}>戻る</button>
-      <div className={styles.itemContainer}>
+      <List gap={8}>
         {cart.map(cartItem => (
-          <div className={styles.cartItem} key={cartItem.item.id}>
-            <div className={styles.thumbnail}></div>
-            <div className={styles.itemInfo}>
-              <div>{cartItem.item.name}</div>
-              <div>数量: {cartItem.count}</div>
-            </div>
-            <div className={styles.buttonContainer}>
-              <button className={styles.deleteButton} onClick={() => onClickDelete(cartItem)}>削除</button>
-            </div>
-          </div>
+          <ItemCard
+            key={cartItem.item.id}
+            item={cartItem.item}
+            count={cartItem.count}
+            actionButton={<button onClick={() => onClickDelete(cartItem)}>削除</button>}
+          />
         ))}
-      </div>
+      </List>
 
       <label>
         お名前:

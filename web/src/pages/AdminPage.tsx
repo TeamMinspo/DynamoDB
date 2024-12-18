@@ -1,6 +1,9 @@
-import {useNavigate} from "react-router-dom";
-import {ChangeEvent, useEffect, useState} from "react";
+import {useNavigate} from 'react-router-dom'
+import {ChangeEvent, useEffect, useState} from 'react'
 import {OrderStatus, ReceivedOrder} from '../model/ReceivedOrder.ts'
+import Contents from '../components/Contents.tsx'
+import OrderCard from '../components/OrderCard.tsx'
+import List from '../components/List.tsx'
 
 const AdminPage = () => {
   const navigate = useNavigate()
@@ -35,25 +38,20 @@ const AdminPage = () => {
   }
 
   return (
-    <>
+    <Contents>
+      <h2>管理者ページ</h2>
       <button onClick={() => navigate("/")}>戻る</button>
-      {orders.map(order => (
-        <div key={order.id}>
-          <div>{order.customerName}</div>
-          {order.items.map(cartItem => (
-            <div key={cartItem.item.id}>
-              <div>{cartItem.item.name}</div>
-              <div>{cartItem.count}</div>
-            </div>
-          ))}
-          <select value={order.status} onChange={(e) => onChangeStatus(e, order)}>
-            <option value="RECEIVED">注文受付</option>
-            <option value="SHIPPED">発送済み</option>
-            <option value="DELIVERED">配達済み</option>
-          </select>
-        </div>
-      ))}
-    </>
+      <List gap={8}>
+        {orders.map(order => (
+          <OrderCard
+            key={order.id}
+            order={order}
+            isStatusEditable={true}
+            onChangeStatus={onChangeStatus}
+          />
+        ))}
+      </List>
+    </Contents>
   )
 }
 

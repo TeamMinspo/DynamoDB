@@ -1,9 +1,10 @@
-import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
-import styles from "./ItemListPage.module.scss";
-import Item from "../model/Item.ts";
-import {useCartContext} from "../CartContext.ts";
-import Contents from "../components/Contents.tsx";
+import {useNavigate, useParams} from 'react-router-dom'
+import {useEffect, useState} from 'react'
+import Item from '../model/Item.ts'
+import {useCartContext} from '../CartContext.ts'
+import Contents from '../components/Contents.tsx'
+import ItemCard from '../components/ItemCard.tsx'
+import List from '../components/List.tsx'
 
 const ItemListPage = () => {
   const {category} = useParams()
@@ -21,7 +22,6 @@ const ItemListPage = () => {
     const cartItemIndex = cart.findIndex(cartItem => cartItem.item.name === item.name)
     const sameItemAlreadyExistInCart = cartItemIndex >= 0
     if (sameItemAlreadyExistInCart) {
-      console.log(cartItemIndex)
       cart[cartItemIndex].count += 1
       setCart([...cart])
     } else {
@@ -31,24 +31,16 @@ const ItemListPage = () => {
 
   return (
     <Contents>
-      <div className={styles.itemContainer}>
-        <button onClick={() => navigate('/')} className={styles.backButton}>＜戻る</button>
+      <List gap={8}>
+        <button onClick={() => navigate('/')}>＜戻る</button>
         {items.map(item => (
-          <div className={styles.itemCard} key={item.id}>
-            <div className={styles.thumbnail}></div>
-
-            <div className={styles.itemInfo}>
-              <div>{item.name}</div>
-              <div>価格: {item.price}</div>
-              <div>在庫: {item.quantity}</div>
-            </div>
-
-            <div className={styles.buttonContainer}>
-              <button onClick={() => onClickAddCart(item)}>カートに入れる</button>
-            </div>
-          </div>
+          <ItemCard
+            key={item.id}
+            item={item}
+            actionButton={<button onClick={() => onClickAddCart(item)}>カートに入れる</button>}
+          />
         ))}
-      </div>
+      </List>
     </Contents>
   )
 }
