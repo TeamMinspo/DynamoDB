@@ -1,5 +1,6 @@
 package com.example.server
 
+import com.example.server.repository.ItemRepository
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -31,7 +32,7 @@ class OrderController(
                 throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Item count can't be greater than quantity")
             } else {
                 val newItem = item.copy(quantity = item.quantity - cartItem.count)
-                itemRepository.save(newItem)
+                itemRepository.saveItem(newItem)
             }
         }
 

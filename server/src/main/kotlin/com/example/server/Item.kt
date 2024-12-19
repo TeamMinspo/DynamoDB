@@ -1,6 +1,7 @@
 package com.example.server
 
-import java.util.UUID
+import com.example.server.entity.ItemTableEntity
+import java.util.*
 
 enum class PrimaryCategory {
     FOOD,
@@ -32,10 +33,20 @@ enum class SecondaryCategory {
 }
 
 data class Item(
-    val id: UUID = UUID.randomUUID(),
+    val id: UUID,
     val name: String,
     val price: Int,
     val quantity: Int,
     val primaryCategory: PrimaryCategory,
     val secondaryCategory: SecondaryCategory,
 )
+
+fun Item.toItemTableEntity(): ItemTableEntity {
+    return ItemTableEntity(
+        id = this.id.toString(),
+        name = this.name,
+        price = this.price,
+        quantity = this.quantity,
+        primaryCategoryAndSecondaryCategory = "${this.primaryCategory}#${this.secondaryCategory}",
+    )
+}

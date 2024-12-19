@@ -1,5 +1,6 @@
 package com.example.server
 
+import com.example.server.repository.ItemRepository
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -60,6 +61,6 @@ class ItemController(private val itemRepository: ItemRepository) {
 
     @GetMapping("/{category}")
     fun getItemsByCategory(@PathVariable category: SecondaryCategory): List<Item> {
-        return itemRepository.findAll().filter { it.secondaryCategory == category }
+        return itemRepository.findAllItems().filter { it.secondaryCategory == category }
     }
 }
