@@ -61,6 +61,6 @@ class ItemController(private val itemRepository: ItemRepository) {
 
     @GetMapping("/{category}")
     fun getItemsByCategory(@PathVariable category: SecondaryCategory): List<Item> {
-        return itemRepository.findAllItems().filter { it.secondaryCategory == category }
+        return itemRepository.findAllBySecondary(category)
     }
 }

@@ -1,6 +1,8 @@
 package com.example.server
 
+import com.example.server.entity.MainTableEntity
 import com.example.server.repository.ItemRepository
+import com.example.server.repository.OrderRepository
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
@@ -16,7 +18,7 @@ class OrderController(
 
     @GetMapping
     fun getAllOrders(): List<ReceivedOrder> {
-        return orderRepository.findAll()
+        return orderRepository.findAllOrders()
     }
 
     @PostMapping
@@ -41,19 +43,19 @@ class OrderController(
             customerName = order.customerName,
             status = OrderStatus.RECEIVED
         )
-        orderRepository.save(receivedOrder)
+        orderRepository.saveOrder(receivedOrder)
         return receivedOrder.id
     }
 
     @GetMapping("/{orderId}")
     fun getOrderById(@PathVariable orderId: UUID): ReceivedOrder {
-        return orderRepository.findById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
+        return orderRepository.findOrderById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
     }
 
     @PatchMapping("/{orderId}")
     fun updateOrderById(@PathVariable orderId: UUID, @RequestBody order: ReceivedOrder) {
-        orderRepository.findById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
-        orderRepository.save(order)
+        orderRepository.findOrderById(orderId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found")
+        orderRepository.saveOrder(order)
     }
 }
 
@@ -61,6 +63,34 @@ data class CartItem(
     val item: Item,
     val count: Int
 )
+
+fun CartItem.toMainTableEntity(orderId: UUID): MainTableEntity {
+    return MainTableEntity(
+        pk = "Order#${orderId}",
+        sk = "Item#${this.item.id}",
+        count = this.count,
+        name = this.item.name,
+        price = this.item.price,
+        quantity = this.item.quantity,
+        primaryCategory = this.item.primaryCategory.toString(),
+        secondaryCategory = this.item.secondaryCategory.toString(),
+    )
+}
+
+data class OrderMetadata(
+    var orderId: UUID,
+    var customerName: String,
+    var status: OrderStatus,
+)
+
+fun OrderMetadata.toMainTableEntity(): MainTableEntity {
+    return MainTableEntity(
+        pk = "Order#${this.orderId}",
+        sk = "#Metadata",
+        orderStatus = this.status.toString(),
+        customerName = this.customerName,
+    )
+}
 
 data class Order(
     val items: List<CartItem>,

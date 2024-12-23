@@ -28,7 +28,7 @@ fun <PK, SK> Key.Builder.setPrimaryKeys(
 ): Key.Builder {
     this
         .setPK(secondaryIndex.pk)
-        .setSK(secondaryIndex.pk)
+        .setSK(secondaryIndex.sk)
     return this
 }
 

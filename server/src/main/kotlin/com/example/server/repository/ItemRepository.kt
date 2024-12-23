@@ -1,17 +1,17 @@
 package com.example.server.repository
 
 import com.example.server.Item
-import com.example.server.entity.ItemTableEntity
+import com.example.server.SecondaryCategory
+import com.example.server.entity.MainTableEntity
 import com.example.server.entity.toItem
-import com.example.server.itemSeeds
-import com.example.server.toItemTableEntity
+import com.example.server.toMainTableEntity
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Repository
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import java.util.*
 
 interface ItemRepository {
-    fun findAllItems(): List<Item>
+    fun findAllBySecondary(category: SecondaryCategory): List<Item>
     fun findById(itemId: UUID): Item?
     fun saveItem(item: Item): Item
 }
@@ -23,37 +23,18 @@ class DynamoDBItemRepository(
     tableNameSuffix: String,
 ):
     ItemRepository,
-    DynamoDBRepository<ItemTableEntity, String, String>(dynamoDbEnhancedClient, tableNameSuffix)
+    DynamoDBRepository<MainTableEntity, String, String>(dynamoDbEnhancedClient, tableNameSuffix)
 {
-    override fun findAllItems(): List<Item> {
-        return super.findAll().map { it.toItem() }
+    override fun findAllBySecondary(category: SecondaryCategory): List<Item> {
+        return super.findAllByPK("Item#${category}").map { it.toItem() }
     }
 
     override fun findById(itemId: UUID): Item? {
-        return super.findAllByPK(itemId.toString()).firstOrNull()?.toItem()
+        return super.findAllByPKAndSKBeginsWith("Item#", "").filter { it.sk == itemId.toString() }.map { it.toItem() }.firstOrNull()
     }
 
     override fun saveItem(item: Item): Item {
-        super.save(item.toItemTableEntity())
+        super.save(item.toMainTableEntity())
         return item
     }
 }
-
-class InMemoryItemRepository: ItemRepository {
-    override fun findAllItems(): List<Item> {
-        return items
-    }
-
-    override fun findById(itemId: UUID): Item? {
-        return items.find { it.id == itemId }
-    }
-
-    override fun saveItem(item: Item): Item {
-        items.removeIf { it.id == item.id }
-        items.add(item)
-        return item
-    }
-
-    private var items: MutableList<Item> = itemSeeds.toMutableList()
-}
-

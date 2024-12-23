@@ -1,6 +1,6 @@
 package com.example.server
 
-import com.example.server.entity.ItemTableEntity
+import com.example.server.entity.MainTableEntity
 import com.example.server.repository.ItemRepository
 import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
@@ -21,19 +21,20 @@ class DynamoDBInitializer(
     private val tableNameSuffix: String,
     private val itemRepository: ItemRepository,
 ) {
-    private val itemTable: DynamoDbTable<ItemTableEntity> = dynamoDBEnhancedClient
+    private val mainTable: DynamoDbTable<MainTableEntity> = dynamoDBEnhancedClient
         .table(
-            "item_table_${tableNameSuffix}",
-            TableSchema.fromBean(ItemTableEntity::class.java)
+            "main_table_${tableNameSuffix}",
+            TableSchema.fromBean(MainTableEntity::class.java)
         )
+
     @PostConstruct
     fun initializeDynamoDB() {
-        createInformationTable()
+        createMainTable()
     }
 
-    private fun createInformationTable() {
+    private fun createMainTable() {
         try {
-            itemTable.createTable { builder ->
+            mainTable.createTable { builder ->
                 builder.provisionedThroughput { throughput ->
                     throughput
                         .readCapacityUnits(10L)
@@ -41,17 +42,18 @@ class DynamoDBInitializer(
                         .build()
                 }
             }
-            waitForTableBecomeActive(itemTable)
+            waitForTableBecomeActive(mainTable)
             itemSeeds.forEach { item ->
                 itemRepository.saveItem(item)
             }
         } catch (error: ResourceInUseException) {
             println("Main Table already exists...skip creating tables.")
         } catch (error: Exception) {
-            println("Error creating item table")
+            println("Error creating main table")
             println("Error: ${error.message}")
         }
     }
+
 
     private fun <Table>waitForTableBecomeActive(dynamoDbTable: DynamoDbTable<Table>) {
         val waiter = standardClient.waiter()

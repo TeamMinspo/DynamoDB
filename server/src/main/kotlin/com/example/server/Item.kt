@@ -1,6 +1,7 @@
 package com.example.server
 
 import com.example.server.entity.ItemTableEntity
+import com.example.server.entity.MainTableEntity
 import java.util.*
 
 enum class PrimaryCategory {
@@ -48,5 +49,17 @@ fun Item.toItemTableEntity(): ItemTableEntity {
         price = this.price,
         quantity = this.quantity,
         primaryCategoryAndSecondaryCategory = "${this.primaryCategory}#${this.secondaryCategory}",
+    )
+}
+
+fun Item.toMainTableEntity(): MainTableEntity {
+    return MainTableEntity(
+        pk = "Item#${this.secondaryCategory}",
+        sk = this.id.toString(),
+        name = this.name,
+        price = this.price,
+        quantity = this.quantity,
+        primaryCategory = this.primaryCategory.toString(),
+        secondaryCategory = this.secondaryCategory.toString(),
     )
 }
