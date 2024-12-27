@@ -13,6 +13,12 @@ import software.amazon.awssdk.enhanced.dynamodb.model.BatchGetResultPageIterable
 import software.amazon.awssdk.enhanced.dynamodb.model.ReadBatch
 import software.amazon.awssdk.enhanced.dynamodb.model.TransactWriteItemsEnhancedRequest
 
+
+interface NoSQLEnhancedRepository {
+    fun saveInTransaction(items: List<TableEntity>)
+    fun batchGetItems(resources: List<BatchResource<*, *>>): List<BatchResponse>
+}
+
 abstract class DynamoDBEnhancedRepository(
     private val dynamoDbEnhancedClient: DynamoDbEnhancedClient,
     private val tableNameSuffix: String

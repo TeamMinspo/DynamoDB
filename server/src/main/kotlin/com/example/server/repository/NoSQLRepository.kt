@@ -4,9 +4,7 @@ import com.example.server.entity.TableEntity
 import com.example.server.extension.setPK
 import com.example.server.extension.setPrimaryKeys
 import com.example.server.extension.toEntities
-import com.example.server.model.BatchResponse
 import com.example.server.model.SecondaryIndex
-import com.example.server.model.request.BatchResource
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable
 import software.amazon.awssdk.enhanced.dynamodb.Key
@@ -203,9 +201,4 @@ abstract class DynamoDBRepository<Table: TableEntity, PK, SK>(
             .query(queryConditional)
             .toEntities()
     }
-}
-
-interface NoSQLEnhancedRepository {
-    fun saveInTransaction(items: List<TableEntity>)
-    fun batchGetItems(resources: List<BatchResource<*, *>>): List<BatchResponse>
 }
